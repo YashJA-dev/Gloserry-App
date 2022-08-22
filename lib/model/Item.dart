@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
+
 class Item{
   String price;
   String itemName;
   DateTime time;
-  Item(this.price,this.itemName,this.time);
+  Item({@required this.price,@required this.itemName,@required this.time});
 }

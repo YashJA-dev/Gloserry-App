@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:grocery_app/widgets/transectionlist.dart';
-import './model/Item.dart';
-import 'package:intl/intl.dart';
+import 'package:grocery_app/Providers/GloceryListProvider.dart';
+import 'package:provider/provider.dart';
 
 import 'Home.dart';
-import 'controller/InputController.dart';
 
 void main() {
-    WidgetsFlutterBinding.ensureInitialized();
-      SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp]);
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   runApp(MyApp());
 }
@@ -21,15 +18,18 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      showPerformanceOverlay: true,
       theme: ThemeData(
         accentColor: Colors.black,
         primarySwatch: Colors.purple,
       ),
-      home: Home(),
+      home: ChangeNotifierProvider(
+        create: (context) => GloceryList(),
+        child: Home(),
+      ),
     );
   }
 }

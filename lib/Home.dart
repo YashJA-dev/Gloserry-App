@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_app/widgets/transectionlist.dart';
+import 'package:provider/provider.dart';
 import './model/Item.dart';
 import 'package:intl/intl.dart';
 
+import 'Providers/GloceryListProvider.dart';
 import 'controller/InputController.dart';
 import 'widgets/Chart.dart';
 
-class Home extends StatefulWidget {
-  @override
-  State<Home> createState() => _HomeState();
-}
-
-class _HomeState extends State<Home> {
-  List<Item> items_list = [];
+class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appBar = AppBar(
@@ -38,14 +34,14 @@ class _HomeState extends State<Home> {
                       appBar.preferredSize.height -
                       MediaQuery.of(context).padding.top) *
                   0.2,
-              child: Chart(items_list),
+              child: Chart(),
             ),
             Container(
               height: (MediaQuery.of(context).size.height -
                       appBar.preferredSize.height -
                       MediaQuery.of(context).padding.top) *
                   0.8,
-              child: Transection_List(items_list, removeTransection),
+              child: Transection_List(),
             ),
           ],
         ),
@@ -65,23 +61,7 @@ class _HomeState extends State<Home> {
     showModalBottomSheet(
       context: ctx,
       isScrollControlled: true,
-      builder: (bctx) => InputCntroller(addTransections),
+      builder: (bctx) => InputCntroller(context: ctx),
     );
-  }
-
-  void removeTransection(int index) {
-    items_list.removeAt(index);
-    print("${items_list.toString()} fdsafd");
-    
-    setState(() {
-      items_list;
-    });
-  }
-
-  void addTransections(String food_name, String ammount, DateTime time) {
-    items_list.add(Item(ammount, food_name, time));
-    setState(() {
-      items_list;
-    });
   }
 }

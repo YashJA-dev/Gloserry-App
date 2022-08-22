@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:grocery_app/Providers/GloceryListProvider.dart';
 import 'package:grocery_app/model/ChartData.dart';
 import 'package:grocery_app/model/Item.dart';
 import 'package:grocery_app/widgets/ChartBarWidget.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class Chart extends StatelessWidget {
   List<Item> itemList;
-  Chart(this.itemList);
   List<ChartData> get groupedTransectionValues {
     return List.generate(7, (index) {
       var weekDay = DateTime.now().subtract(
@@ -31,21 +32,24 @@ class Chart extends StatelessWidget {
       return sum + item.ammount;
     });
   }
-
+  
   @override
   Widget build(BuildContext context) {
+    GloceryList gloceryList=Provider.of<GloceryList>(context);
+    itemList=gloceryList.getGloceryList;
     return Card(
         elevation: 6,
-        child: Container (
+        child: Container(
           padding: EdgeInsets.all(10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: groupedTransectionValues.map((data) {
               return Flexible(
                 fit: FlexFit.tight,
-                child: maxSpending!=0?ChartBar(
-                    data.day, data.ammount, data.ammount / maxSpending):ChartBar(
-                    data.day, 0,0),
+                child: maxSpending != 0
+                    ? ChartBar(
+                        data.day, data.ammount, data.ammount / maxSpending)
+                    : ChartBar(data.day, 0, 0),
               );
             }).toList(),
           ),

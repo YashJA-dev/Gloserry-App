@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
+import '../Providers/GloceryListProvider.dart';
+import '../model/Item.dart';
 
 class InputCntroller extends StatefulWidget {
-  Function addItem;
-  InputCntroller(this.addItem);
-  
+  BuildContext context;
+  InputCntroller({@required this.context});
   @override
   State<InputCntroller> createState() => _InputCntrollerState();
 }
@@ -14,10 +17,12 @@ class _InputCntrollerState extends State<InputCntroller> {
   var foodName = TextEditingController();
   var ammount_food = TextEditingController();
   DateTime _selectedDate = null;
-
+  GloceryList listProvider;
   @override
   Widget build(BuildContext context) {
     double price;
+    listProvider = Provider.of<GloceryList>(widget.context);
+    List<Item> list = listProvider.getGloceryList;
     return Container(
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -33,8 +38,8 @@ class _InputCntrollerState extends State<InputCntroller> {
               onSubmitted: (_) => _addIteminList(),
             ),
             TextField(
-              maxLength: 2,
-              decoration: InputDecoration(label: Text("Price in \$")),
+              maxLength: 8,
+              decoration: InputDecoration(label: Text("Price in Rs.")),
               keyboardType: TextInputType.number,
               controller: ammount_food,
               onSubmitted: (_) => _addIteminList(),
@@ -48,7 +53,9 @@ class _InputCntrollerState extends State<InputCntroller> {
                 ),
                 Text(_selectedDate == null
                     ? "Pls chose a Date"
-                    : DateFormat("dd/MMMM/yyyy").format(_selectedDate).toString())
+                    : DateFormat("dd/MMMM/yyyy")
+                        .format(_selectedDate)
+                        .toString())
               ],
             ),
             Row(
@@ -57,7 +64,6 @@ class _InputCntrollerState extends State<InputCntroller> {
                 ElevatedButton(
                     onPressed: () => {
                           _addIteminList(),
-
                         },
                     child: Text("Add Item"))
               ],
@@ -69,7 +75,11 @@ class _InputCntrollerState extends State<InputCntroller> {
   _addIteminList() {
     double price = double.parse(ammount_food.text);
     if (price > 0 && foodName.text != "" && _selectedDate != null) {
-      widget.addItem(foodName.text, price.toString(), _selectedDate);
+      Item item = Item(
+          time: _selectedDate,
+          itemName: foodName.text,
+          price: price.toString());
+      listProvider.addItem(item: item);
       Navigator.of(context).pop();
     }
   }
@@ -81,7 +91,8 @@ class _InputCntrollerState extends State<InputCntroller> {
             firstDate: DateTime(2021),
             lastDate: DateTime.now())
         .then((pickedDate) => {
-              if (pickedDate != null){
+              if (pickedDate != null)
+                {
                   _selectedDate = pickedDate,
                   setState(() {
                     _selectedDate;
